@@ -1,3 +1,4 @@
+<?php include("checklogin.php"); ?>
 <?php
     include_once("db.php");
 	$rosterID = $_GET['id'];

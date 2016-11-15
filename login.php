@@ -1,3 +1,33 @@
+<?php
+session_start();
+include("db.php");
+if(isset($_POST['username']) & isset($_POST['password'])){
+	$username = $_POST['username'];
+	$password = $_POST['password'];
+	$password = md5($password);
+	$sql =  "SELECT ID, password FROM users WHERE username = '$username'";
+	$result = mysqli_query($db, $sql);
+	if(mysqli_num_rows($result) < 1){
+		$msg = "username does not exist";
+		}
+	else{
+		$result = mysqli_query($db, $sql);
+		$row = mysqli_fetch_row($result);
+		if($password === $row[1]){
+			$_SESSION['ID'] = $row[0];
+			$_SESSION['User'] = $username;
+			header('Location: index.php');
+			}
+		else{
+			$msg = "incorrect password";
+			}
+		} 
+	}
+else{
+	$msg = "";
+	}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -82,12 +112,13 @@
     
         <div class="container">
         <div class="row">
-        <form class="text-center" role="form">
+        <form class="text-center" role="form" method="post" action="login.php">
         <div style="background-color:inherit; margin-bottom:5px" class="col-sm-5 panel panel-default col-centered">
             	<h3>Please Log In</h3>
-            	<input style="margin-top:5px; margin-bottom:5px" class="form-control" type="text" name="username" placeholder="Username"/>
-            	<input style="margin-top:5px; margin-bottom:5px" class="form-control" type="password" name="password" placeholder="Password"/>
-        <button style="border-radius:5px" class="form-control btn btn-submit" type="submit">Submit</button>
+            	<h4 class = "form-signin-heading"><?php echo $msg; ?></h4>
+            <input type = "text" class = "form-control" name = "username" placeholder = "Username" required autofocus>
+            <input type = "password" class = "form-control" name = "password" placeholder = "Password" required><br>
+        <button style="border-radius:5px" class="form-control btn btn-submit" type="submit">Sign In</button>
         </div>
         </form>
         </div>
